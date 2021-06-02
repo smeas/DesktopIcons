@@ -13,7 +13,7 @@ namespace DesktopIcons {
 		protected IntPtr localPtr;
 		protected bool isDisposed;
 
-		public SharedMem(Kernel32.SafeHPROCESS hProcess, int bufferSize) {
+		protected SharedMem(Kernel32.SafeHPROCESS hProcess, int bufferSize) {
 			this.hProcess = hProcess;
 			this.bufferSize = bufferSize;
 
@@ -48,7 +48,6 @@ namespace DesktopIcons {
 		public void Dispose() {
 			CheckDisposed();
 
-			// Free the local and remote buffers
 			if (localPtr != IntPtr.Zero) {
 				Marshal.FreeHGlobal(localPtr);
 				localPtr = IntPtr.Zero;
@@ -109,8 +108,10 @@ namespace DesktopIcons {
 			if (value.Length + 1 > bufferLengthInChars)
 				throw new ArgumentException("String is to large to fit in buffer");
 
+			// Copy the string bytes into a local buffer (including the null terminator)
 			IntPtr localStrPtr = Marshal.StringToHGlobalUni(value);
 			try {
+				// Copy the contents of the local buffer into the remote buffer (+ 1 to include the null terminator)
 				WriteRemoteMemory(localStrPtr, (value.Length + 1) * sizeof(char));
 			}
 			finally {
@@ -119,6 +120,7 @@ namespace DesktopIcons {
 		}
 
 		public string GetValue() {
+			// Read the string data from the remote buffer into the local buffer and construct a string from it
 			ReadRemoteMemory(localPtr, bufferSize);
 			return Marshal.PtrToStringUni(localPtr);
 		}
@@ -130,10 +132,11 @@ namespace DesktopIcons {
 			if (length == 0)
 				return string.Empty;
 
-			int requestedSize = length * sizeof(char);
+			int requestedSize = length * sizeof(char); // size of the string data
 			if (requestedSize > bufferSize)
 				throw new ArgumentException("Requested length exceeds the buffer size");
 
+			// Read the string data from the remote buffer into the local buffer and construct a string from it
 			ReadRemoteMemory(localPtr, requestedSize);
 			return Marshal.PtrToStringUni(localPtr, length);
 		}

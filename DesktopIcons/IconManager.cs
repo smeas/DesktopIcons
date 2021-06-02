@@ -77,7 +77,7 @@ namespace DesktopIcons {
 			if (nChars == 0)
 				throw new Exception("Failed to get item text");
 
-			// TODO: pszText could have changed as per the documentation, read from it instead.
+			// TODO: pszText could have changed as per the documentation, read from _it_ instead.
 			return sharedText.GetValue(nChars);
 		}
 
