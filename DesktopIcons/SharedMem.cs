@@ -96,7 +96,7 @@ namespace DesktopIcons {
 	}
 
 	/// <summary>
-	/// Represents a shared string between two processes.
+	/// Represents a string shared between two processes.
 	/// </summary>
 	public class SharedString : SharedMem {
 		private readonly int bufferLengthInChars;

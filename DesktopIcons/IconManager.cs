@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Text;
-using System.Text.Json;
 using Vanara.PInvoke;
 
 namespace DesktopIcons {
+	public record IconInfo(int Index, Point Position);
+
 	public class IconManager {
 		private const Kernel32.ProcessAccess ProcessAccessRWO = Kernel32.ProcessAccess.PROCESS_VM_READ |
 			Kernel32.ProcessAccess.PROCESS_VM_WRITE | Kernel32.ProcessAccess.PROCESS_VM_OPERATION;
@@ -82,8 +82,8 @@ namespace DesktopIcons {
 		}
 
 		public Point GetItemPosition(int index) {
-			if (User32.SendMessage(hListView, (uint)ComCtl32.ListViewMessage.LVM_GETITEMPOSITION, (IntPtr)index,
-			                       sharedPoint.RemotePtr) == IntPtr.Zero)
+			if (User32.SendMessage(hListView, (uint)ComCtl32.ListViewMessage.LVM_GETITEMPOSITION,
+			                       (IntPtr)index, sharedPoint.RemotePtr) == IntPtr.Zero)
 				throw new Exception("Failed to get item pos");
 
 			POINT point = sharedPoint.GetValue();
@@ -98,15 +98,15 @@ namespace DesktopIcons {
 			                   sharedPoint.RemotePtr);
 		}
 
-		public Dictionary<string, Point> GetDesktopIcons() {
+		public Dictionary<string, IconInfo> GetDesktopIcons() {
 			int itemCount = GetItemCount();
-			Dictionary<string, Point> icons = new();
+			Dictionary<string, IconInfo> icons = new();
 
 			try {
 				for (int i = 0; i < itemCount; i++) {
 					string iconName = GetItemText(i);
 					Point iconPos = GetItemPosition(i);
-					icons.Add(iconName, iconPos);
+					icons.Add(iconName, new IconInfo(i, iconPos));
 				}
 			}
 			catch (ArgumentException) {
