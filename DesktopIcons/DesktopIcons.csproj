@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
         <Configurations>Release;Debug</Configurations>
         <Platforms>x64</Platforms>
+        <UseWpf>true</UseWpf>
     </PropertyGroup>
 
     <ItemGroup>

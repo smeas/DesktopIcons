@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 using Vanara.PInvoke;
 
 namespace DesktopIcons {
+	/// <summary>
+	/// Represents a block of shared memory between two processes.
+	/// </summary>
 	public abstract class SharedMem : IDisposable {
 		protected readonly Kernel32.SafeHPROCESS hProcess;
 		protected readonly int bufferSize;
@@ -65,6 +68,9 @@ namespace DesktopIcons {
 		}
 	}
 
+	/// <summary>
+	/// Represents a block of shared memory between two processes.
+	/// </summary>
 	public class SharedMem<T> : SharedMem {
 		public SharedMem(Kernel32.SafeHPROCESS hProcess) : base(hProcess, Marshal.SizeOf<T>()) { }
 
@@ -89,6 +95,9 @@ namespace DesktopIcons {
 		}
 	}
 
+	/// <summary>
+	/// Represents a shared string between two processes.
+	/// </summary>
 	public class SharedString : SharedMem {
 		private readonly int bufferLengthInChars;
 
